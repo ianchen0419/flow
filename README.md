@@ -1,6 +1,5 @@
-# PrimeUI in Webpack
+# PrimeUI + jsPlumb in Webpack
 
-## Need Library
-* fontawesome 4
-* webpack jquery ui
-* primeui# flow
+## Install Steps
+1 npm install
+2 npm run dev-server
