@@ -98,14 +98,15 @@ module.exports = function $flow() {
 	
 	this.nodeActive=function(th){
 		selectedNode=document.querySelector(".node-block.active");
- 
+
 		if(selectedNode){
 			selectedNode.classList.remove("active");
 		}
 		if(selectedLine){
 			selectedLine.removeType('selected');
-			selectedLine='';
+			selectedLine=null;
 		}
+
 		th.parentNode.classList.add("active");
 		selectedNode=th.parentNode;
 	}
@@ -237,13 +238,13 @@ module.exports = function $flow() {
 		selectedNode=document.querySelector(".node-block.active");
 		if(selectedNode){
 			selectedNode.classList.remove("active");
+			selectedNode='';
 		}
 		if(selectedLine){
 			selectedLine.removeType('selected');
 		}
 		conn.toggleType('selected');
 		selectedLine=conn;
-		that.hi=conn;
 	});
 
 	this.deleteItem=function(){
