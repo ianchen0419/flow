@@ -1,0 +1,54 @@
+.table-sin {
+    border-collapse: collapse;
+    border: 2px solid #b2dcdb;
+    box-shadow: 5px 5px #ddefee;
+}
+
+.table-sin th, .table-sin td {
+    border: 1px solid #e1f0f0;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+.table-sin th {
+    text-align: right;
+}
+
+.table-sin tr:nth-child(even) {
+    background: #f5fbfb;
+}
+
+.table-sin .star {
+    color: #CC0607;
+    font-weight: bolder;
+}
+
+.table-mul {
+    border-collapse: collapse;
+}
+
+.table-mul th {
+    font-size: 14px;
+    background: #e4f4f4;
+    text-align: center;
+    color: #3e5a5a;
+    padding: 4px;
+    border: 1px solid #ddd;
+}
+
+.table-mul tr th:first-child,
+.table-mul tr td:first-child {
+    border-left: none;
+}
+
+.table-mul tr th:last-child,
+.table-mul tr td:last-child {
+    border-right: none;
+}
+
+.table-mul td {
+    font-size: 14px;
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: center;
+}

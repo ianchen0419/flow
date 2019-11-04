@@ -1,0 +1,42 @@
+.ui-dialog {
+	border-radius: 6px;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	padding: 9px 15px;
+	text-align: left;
+	margin: 0;
+	border-bottom: 1px solid #eee;
+}
+
+.ui-dialog .ui-dialog-title {
+	margin: 0;
+	width: 87%;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+	padding: 5px;
+	text-decoration: none;
+	position: static;
+	transition-duration: 0.3s;
+	margin-top: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close span {
+	font-size: 18px;
+}
+
+.ui-dialog .ui-dialog-titlebar-close.ui-state-hover {
+	border: none;
+	background: #e6e6e6;
+}
+
+.ui-dialog .ui-dialog-titlebar-close:hover {
+	padding: 5px;
+}
+
+.ui-dialog-titlebar-close .fa-fw {
+	width: auto;
+}

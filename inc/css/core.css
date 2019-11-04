@@ -1,0 +1,38 @@
+.ui-state-default, 
+.ui-widget-content .ui-state-default, 
+.ui-widget-header .ui-state-default {
+	color: #009e96;
+}
+
+.ui-state-highlight, 
+.ui-widget-content .ui-state-highlight, 
+.ui-widget-header .ui-state-highlight {
+	background: #009e96;
+}
+
+.ui-shadow {
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    filter: none;
+}
+
+.ui-corner-all {
+	border-radius: 4px;
+}
+
+.ui-state-hover, 
+.ui-widget-content .ui-state-hover, 
+.ui-widget-header .ui-state-hover, 
+.ui-state-focus, 
+.ui-widget-content .ui-state-focus, 
+.ui-widget-header .ui-state-focus {
+	background: none;
+}
+
+.ui-chkbox-box.ui-state-active, 
+.ui-chkbox-box.ui-state-focus.ui-state-active, 
+.ui-radiobutton-box.ui-state-active, 
+.ui-radiobutton-box.ui-state-focus.ui-state-active {
+	border-color: #009e96;
+    background: #009e96;
+}
+

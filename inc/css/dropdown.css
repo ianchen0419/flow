@@ -1,0 +1,32 @@
+.ui-dropdown,
+.ui-dropdown.ui-state-hover {
+	width: 100px;
+	border-color: #d7dadc;
+	border-radius: 30px;
+	background: #fff;
+}
+
+.ui-dropdown-label.ui-inputtext {
+	padding-left: 15px;
+	background: none;	
+	line-height: 1.45;
+	text-align: left;
+}
+
+.ui-dropdown-trigger.ui-state-default {
+	padding-right: 5px;
+	background: none;
+}
+
+.ui-dropdown-panel.ui-widget-content {
+	border: none;
+}
+
+.ui-dropdown-item {
+	font-size: 14px;
+	transition-duration: 0.3s;
+}
+
+.ui-dropdown-item.ui-state-hover {
+	background: #e6e6e6;
+}

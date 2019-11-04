@@ -1,0 +1,31 @@
+button {
+	outline: none;
+	cursor: pointer;
+}
+
+.submit-btn {
+	background: #009e96;
+	color: #fff;
+	padding: 6px 20px;
+	min-width: 80px;
+	border-radius: 30px;
+	border: none;
+	margin: 0 4px;
+}
+
+.submit-btn:hover {
+	opacity: 0.8;
+}
+
+.btn-area {
+	text-align: center;
+	margin: 20px 0;	
+}
+
+.func-btn {
+	background: linear-gradient(to bottom, #fefefe 0%,#f3f3f3 100%);
+	border: 1px solid #ddd;
+	padding: 4px 8px;
+    border-radius: 4px;
+}
+

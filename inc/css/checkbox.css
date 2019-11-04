@@ -1,0 +1,22 @@
+.ui-chkbox .ui-chkbox-box {
+	border-color: #cbcbcb;
+    float: none;
+    line-height: 16px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.ui-chkbox .ui-chkbox-box.ui-state-active {
+	border-color: #009e96;
+}
+
+label {
+	vertical-align: middle;
+}
+
+.ui-chkbox .ui-chkbox-icon {
+	color: #fff;
+	font-size: 14px;
+	margin-top: 0;
+	margin-left: -1px;
+}

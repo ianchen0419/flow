@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh_TW">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>認識 Webpack</title>
+	<link rel="stylesheet" href="../dist/bundle.css" />
+</head>
+<body>
+	<h1>FlowDesigner</h1>
+	<div class="flow">
+		<div class="flow-canvas">
+			<div class="flow-header">
+			<div class="left">
+				<button type="button" onclick="$base.showPopup('#addflow3')">簡易三層式</button>
+				<button type="button" onclick="$base.showPopup('#addflow2')">簡易二層式</button>
+			</div>
+			<div class="right">
+				<button id="verify" type="button">
+					<i class="fa fa-search"></i>
+					<span>審核</span>
+				</button>
+				<button id="pass" type="button" class="drag">
+					<i class="fa fa-gavel"></i>
+					<span>放行</span>
+				</button>
+				<button type="button" onclick="$flow.setupNode()">
+					<i class="fa fa-wrench"></i>
+					<span>節點設定</span>
+				</button>
+				<button type="button" onclick="$flow.setLineFilter()">
+					<i class="fa fa-list-ul"></i>
+					<span>連線設定</span>
+				</button>
+				<button type="button" onclick="$flow.deleteItem()">
+					<i class="fa fa-trash"></i>
+					<span>刪除</span>
+				</button>
+			</div>
+		</div>
+			<div id="container"></div>
+		</div>
+	</div>
+
+	<div id="addflow2" class="dialog small" title="訊息">
+		<p>您的流程圖設計將要被覆蓋，確定要繼續嗎?</p>
+		<div class="btn-area">
+			<button type="button" class="submit-btn" onclick="$base.closePopup(this);$flow.default2flow();">確定</button>
+			<button type="button" class="submit-btn" onclick="$base.closePopup(this);">取消</button>
+		</div>
+	</div>
+	<div id="addflow3" class="dialog small" title="訊息">
+		<p>您的流程圖設計將要被覆蓋，確定要繼續嗎?</p>
+		<div class="btn-area">
+			<button type="button" class="submit-btn" onclick="$base.closePopup(this);$flow.default3flow();">確定</button>
+			<button type="button" class="submit-btn" onclick="$base.closePopup(this);">取消</button>
+		</div>
+	</div>
+	<div id="deleteNone" class="dialog small" title="訊息">
+		<p>請先點選流程圖中的節點或連線</p>
+		<div class="btn-area">
+			<button type="button" class="submit-btn" onclick="$base.closePopup(this);">確定</button>
+		</div>
+	</div>
+	<div id="deleteWrong" class="dialog small" title="訊息">
+		<p>編輯節點不可刪除</p>
+		<div class="btn-area">
+			<button type="button" class="submit-btn" onclick="$base.closePopup(this);">確定</button>
+		</div>
+	</div>
+
+	<div id="needClone">
+		<!-- 編輯 -->
+		<div class="node-block edit">
+			<div class="node-circle" onclick="$flow.nodeActive(this)" ondblclick="$(this.parentNode.querySelector('.mydialog')).puidialog('show');">編</div>
+			<div class="node-panel">
+				<div class="bar-area">
+					<div class="node-bar">安控：<span class="info-security">無</span></div>
+				</div>
+			</div>
+			<i class="fa fa-angle-double-right" onclick="this.parentNode.classList.toggle('show')"></i>
+			<div class="mydialog" title="編輯節點設定">
+				<table class="table-sin" width="100%">
+					<tbody>
+						<tr>
+							<th width="20%">步驟類型</th>
+							<td width="80%">編輯</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="star">*</span>
+								<span>安控機制</span>
+							</th>
+							<td>
+								<select class="mydropdown security">
+									<option>無</option>
+									<option>登入密碼</option>
+									<option>OTP</option>
+									<option>電子憑證</option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="btn-area">
+					<button type="button" class="submit-btn" onclick="$flow.closeMyPopup(this);$flow.importEditInfo(this)">確定</button>
+					<button type="button" class="submit-btn" onclick="$flow.closeMyPopup(this);">取消</button>
+				</div>
+			</div>
+		</div>
+		<!-- 審核 -->
+		<div class="node-block verify">
+			<div class="node-circle" onclick="$flow.nodeActive(this)" ondblclick="$(this.parentNode.querySelector('.mydialog')).puidialog('show');">審</div>
+			<div class="node-panel">
+				<div class="node-custom-title info-name">審核自訂名稱</div>
+				<div class="badge-area">
+					<div class="node-badge info-man" hidden>不可連續作業</div>
+					<div class="node-badge info-division" hidden>必須同部門</div>
+				</div>
+				<div class="bar-area">
+					<div class="node-bar">會簽：<span class="info-number">0</span>人</div>
+					<div class="node-bar">安控：<span class="info-security">無</span></div>
+					<div class="node-bar roles no-role">
+						<div class="clip">
+							<span>角色：</span>
+							<span class="info-role">未設定</span>
+						</div>
+						<i class="fa fa-caret-down" onclick="this.parentNode.classList.toggle('open')"></i>
+					</div>
+				</div>
+			</div>
+			<i class="fa fa-angle-double-right" onclick="this.parentNode.classList.toggle('show')"></i>
+			<div class="mydialog scroll" title="審核節點設定">
+				<table class="table-sin" width="100%">
+					<tbody>
+						<tr>
+							<th width="20%">步驟類型</th>
+							<td width="80%">審核</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="star">*</span>
+								<span>步驟名稱</span>
+							</th>
+							<td>
+								<input type="text" value="審核" class="name" />
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="star">*</span>
+								<span>安控機制</span>
+							</th>
+							<td>
+								<select class="mydropdown security">
+									<option>無</option>
+									<option>登入密碼</option>
+									<option>OTP</option>
+									<option>電子憑證</option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="row pl20">
+					<input type="checkbox" class="man" />
+					<label>不可同一人連續作業</label>
+				</div>
+				<div class="row pl20">
+					<input type="checkbox" class="division" />
+					<label>必須與前經手人同一部門</label>
+				</div>
+				<h4>會簽角色</h4>
+				<table class="table-mul" width="100%">
+					<thead>
+						<tr>
+							<th width="60%">角色</th>
+							<th width="40%">功能</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<select class="mydropdown role">
+									<option>---請選擇---</option>
+									<option>編輯者</option>
+									<option>審核者</option>
+									<option>放行者</option>
+								</select>
+							</td>
+							<td>
+								<button class="func-btn" onclick="$flow.addRole(this)">
+									<i class="fa fa-plus"></i>
+									<span>新增</span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="btn-area">
+					<button type="button" class="submit-btn" onclick="$flow.closeMyPopup(this);$flow.importVerifyInfo(this)">確定</button>
+					<button type="button" class="submit-btn" onclick="$flow.closeMyPopup(this);">取消</button>
+				</div>
+			</div>
+		</div>
+		<!-- 放行 -->
+		<div class="node-block pass">
+			<div class="node-circle" onclick="$flow.nodeActive(this)" ondblclick="$(this.parentNode.querySelector('.mydialog')).puidialog('show');">放</div>
+			<div class="node-panel">
+				<div class="node-custom-title info-name">審核自訂名稱</div>
+				<div class="badge-area">
+					<div class="node-badge info-man" hidden>不可連續作業</div>
+					<div class="node-badge info-division" hidden>必須同部門</div>
+				</div>
+				<div class="bar-area">
+					<div class="node-bar">會簽：<span class="info-number">0</span>人</div>
+					<div class="node-bar">安控：<span class="info-security">電子憑證</span></div>
+					<div class="node-bar roles no-role">
+						<div class="clip">
+							<span>角色：</span>
+							<span class="info-role">未設定</span>
+						</div>
+						<i class="fa fa-caret-down" onclick="this.parentNode.classList.toggle('open')"></i>
+					</div>
+				</div>
+			</div>
+			<i class="fa fa-angle-double-right" onclick="this.parentNode.classList.toggle('show')"></i>
+			<div class="mydialog scroll" title="放行節點設定">
+				<table class="table-sin" width="100%">
+					<tbody>
+						<tr>
+							<th width="20%">步驟類型</th>
+							<td width="80%">放行</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="star">*</span>
+								<span>步驟名稱</span>
+							</th>
+							<td>
+								<input type="text" value="放行" class="name" />
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="star">*</span>
+								<span>安控機制</span>
+							</th>
+							<td>
+								<select class="mydropdown security">
+									<option>無</option>
+									<option>登入密碼</option>
+									<option>OTP</option>
+									<option>電子憑證</option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="row pl20">
+					<input type="checkbox" class="man" />
+					<label>不可同一人連續作業</label>
+				</div>
+				<div class="row pl20">
+					<input type="checkbox" class="division" />
+					<label>必須與前經手人同一部門</label>
+				</div>
+				<h4>會簽角色</h4>
+				<table class="table-mul" width="100%">
+					<thead>
+						<tr>
+							<th width="60%">角色</th>
+							<th width="40%">功能</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<select class="mydropdown role">
+									<option>---請選擇---</option>
+									<option>編輯者</option>
+									<option>審核者</option>
+									<option>放行者</option>
+								</select>
+							</td>
+							<td>
+								<button class="func-btn" onclick="$flow.addRole(this)">
+									<i class="fa fa-plus"></i>
+									<span>新增</span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="btn-area">
+					<button type="button" class="submit-btn" onclick="$flow.closeMyPopup(this);$flow.importPassInfo(this)">確定</button>
+					<button type="button" class="submit-btn" onclick="$flow.closeMyPopup(this);">取消</button>
+				</div>
+			</div>
+		</div>
+		<!-- 結束 -->
+		<div class="node-block end">
+			<div class="node-circle">結束</div>
+		</div>
+	</div>
+
+	<script src="../dist/bundle.js"></script>
+</body>
+</html>
