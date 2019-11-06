@@ -7,11 +7,6 @@ module.exports = function $flow() {
 	var dragArea={
 		containment: '#container'
 	}
-	
-	var connectorSelectStyle = {
-	lineWidth : 4,
-	strokeStyle : "#000000" // red
-};
 
 	var connectComm={
 		connector: 'Straight',
@@ -65,13 +60,15 @@ module.exports = function $flow() {
         maxConnections: -1
 	};
 
-	jsPlumb.registerConnectionTypes({
-		'selected':{
-	    	paintStyle: {
-	    		stroke: '#333'
-	    	}
-		}
-	});
+	aaa={
+		stroke: '#333',
+		strokeWidth: 2,
+	}
+
+	bbb={
+		stroke: '#b3b3b3',
+		strokeWidth: 2,
+	}
 
 	$('#verify').draggable({
 		helper: 'clone',
@@ -115,7 +112,7 @@ module.exports = function $flow() {
 			selectedNode.classList.remove("active");
 		}
 		if(selectedLine){
-			selectedLine.removeType('selected');
+			selectedLine.setPaintStyle(bbb);
 			selectedLine=null;
 		}
 
@@ -269,12 +266,11 @@ module.exports = function $flow() {
 			selectedNode='';
 		}
 		if(selectedLine){
-			selectedLine.removeType('selected');
+			selectedLine.setPaintStyle(bbb);
 		}
-		conn.toggleType('selected');
-		// conn.setPaintStyle(connectorSelectStyle);
+		conn.setPaintStyle(aaa)
 		selectedLine=conn;
-		that.hi=conn;
+		// that.hi=conn;
 
 	});
 

@@ -278,3 +278,7 @@ body {
 #needClone {
     display: none;
 }
+
+.jtk-overlay {
+    user-select: none;
+}
