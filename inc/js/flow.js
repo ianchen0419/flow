@@ -2,9 +2,16 @@ module.exports = function $flow() {
 	var that=this;
 	var selectedLine;
 	var selectedNode;
+	var verifyLine=0;
+	var verifyLockLine=false;
 	var dragArea={
 		containment: '#container'
 	}
+	
+	var connectorSelectStyle = {
+	lineWidth : 4,
+	strokeStyle : "#000000" // red
+};
 
 	var connectComm={
 		connector: 'Straight',
@@ -17,6 +24,7 @@ module.exports = function $flow() {
         hoverPaintStyle: {
         	stroke: "#333"
         },
+        detachable: false,
 	};
 
 	var sourceSetting={
@@ -34,6 +42,8 @@ module.exports = function $flow() {
         connectorHoverStyle: {
         	stroke: '#333'
         },
+        detachable: false,
+        maxConnections: -1
 	};
 	 
 	var targetSetting={
@@ -51,6 +61,8 @@ module.exports = function $flow() {
         connectorHoverStyle: {
         	stroke: '#333'
         },
+        detachable: false,
+        maxConnections: -1
 	};
 
 	jsPlumb.registerConnectionTypes({
@@ -113,7 +125,14 @@ module.exports = function $flow() {
 
 
 	this.default2flow=function(){
-		container.innerHTML='';
+
+		var oldElements=document.querySelectorAll('[class*="jtk"]');
+		if(oldElements.length>0){
+			for(each in oldElements){
+				jsPlumb.remove(oldElements[each]);
+			}
+		}
+
 		selectedLine='';
 		selectedNode='';
 
@@ -122,11 +141,11 @@ module.exports = function $flow() {
 		var newEnd=container.appendChild(document.querySelector('#needClone .end').cloneNode(true));
 
 		newEdit.style.top='250px';
-		newEdit.style.left='200px';
+		newEdit.style.left='350px';
 		newPass.style.top='150px';
-		newPass.style.left='400px';
+		newPass.style.left='550px';
 		newEnd.style.top='250px';
-		newEnd.style.left='600px';
+		newEnd.style.left='750px';
 
 		jsPlumb.draggable(newEdit, dragArea);
 		jsPlumb.draggable(newPass, dragArea);
@@ -153,7 +172,14 @@ module.exports = function $flow() {
 	
 
 	this.default3flow=function(){
-		container.innerHTML='';
+
+		var oldElements=document.querySelectorAll('[class*="jtk"]');
+		if(oldElements.length>0){
+			for(each in oldElements){
+				jsPlumb.remove(oldElements[each]);
+			}
+		}
+
 		selectedLine='';
 		selectedNode='';
 
@@ -163,13 +189,13 @@ module.exports = function $flow() {
 		var newEnd=container.appendChild(document.querySelector('#needClone .end').cloneNode(true));
 
 		newEdit.style.top='250px';
-		newEdit.style.left='150px';
+		newEdit.style.left='300px';
 		newVerify.style.top='150px';
-		newVerify.style.left='300px';
+		newVerify.style.left='450px';
 		newPass.style.top='150px';
-		newPass.style.left='450px';
+		newPass.style.left='600px';
 		newEnd.style.top='250px';
-		newEnd.style.left='600px';
+		newEnd.style.left='750px';
 
 		jsPlumb.draggable(newEdit, dragArea);
 		jsPlumb.draggable(newVerify, dragArea);
@@ -197,6 +223,8 @@ module.exports = function $flow() {
 	        source: newPass,
 	        target: newEnd,
 	    }, connectComm);
+
+	    verifyLockLine=true;
 
 	    
 	    componentInit();
@@ -244,7 +272,56 @@ module.exports = function $flow() {
 			selectedLine.removeType('selected');
 		}
 		conn.toggleType('selected');
+		// conn.setPaintStyle(connectorSelectStyle);
 		selectedLine=conn;
+		that.hi=conn;
+
+	});
+
+	jsPlumb.bind('connection', function(info) {
+
+		var sourceClass=info.source.classList;
+		var targetClass=info.target.classList;
+
+		//審核直連結束
+		if(sourceClass.contains('verify') && targetClass.contains('end')){
+			$('#lineWrong1').puidialog('show');
+			
+			window.setTimeout(function(){
+				jsPlumb.deleteConnection(info.connection);
+			},100);
+		}
+
+		//編輯直連結束
+		if(sourceClass.contains('edit') && targetClass.contains('end')){
+			$('#lineWrong2').puidialog('show');
+			
+			window.setTimeout(function(){
+				jsPlumb.deleteConnection(info.connection);
+			},100);
+		}
+
+		//放行直連審核
+		if(sourceClass.contains('pass') && targetClass.contains('verify')){
+			$('#lineWrong3').puidialog('show');
+			
+			window.setTimeout(function(){
+				jsPlumb.deleteConnection(info.connection);
+			},100);
+		}
+
+		//------------
+
+
+		if(sourceClass.contains('edit') && targetClass.contains('verify')){
+			verifyLine+=1;
+			if(verifyLine>1){
+				var text=`${verifyLine-1}(未設定)`;
+				info.connection.setLabel(text);
+			}
+		}
+
+
 	});
 
 	this.deleteItem=function(){
@@ -252,6 +329,9 @@ module.exports = function $flow() {
 			$('#deleteNone').puidialog('show');
 		}else{
 			if(selectedLine){
+				if(selectedLine.source.classList.contains('edit') && selectedLine.target.classList.contains('verify')){
+					verifyLine-=1;
+				}
 				jsPlumb.deleteConnection(selectedLine);
 				selectedLine='';
 			}
@@ -268,6 +348,12 @@ module.exports = function $flow() {
 			}
 		}
 	}
+
+	window.addEventListener('keydown', function(e){
+		if(e.keyCode==8){
+			that.deleteItem();
+		}
+	})
 
 	this.closeMyPopup=function(th){
 		$(th.closest('.mydialog')).puidialog('hide');
@@ -407,7 +493,14 @@ module.exports = function $flow() {
 			$(myRole).puidropdown('addOption', tempOptions[i]);
 		}
 		
+	}
 
+	this.setupNode=function(){
+		if(selectedNode){
+			$(selectedNode.querySelector('.mydialog')).puidialog('show');
+		}else{
+			$('#setNothing1').puidialog('show');
+		}
 	}
 
 }

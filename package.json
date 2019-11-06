@@ -31,7 +31,7 @@
 		"font-awesome": "^4.7.0",
 		"jquery": "^3.4.1",
 		"jqueryui": "^1.11.1",
-		"jsplumb": "^2.11.1",
+		"jsplumb": "^2.12.5",
 		"primeui": "^4.1.15"
 	}
 }
