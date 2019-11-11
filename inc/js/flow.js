@@ -2,8 +2,7 @@ module.exports = function $flow() {
 	var that=this;
 	var selectedLine;
 	var selectedNode;
-	var verifyLine=0;
-	var verifyLockLine=false;
+
 	var dragArea={
 		containment: '#container'
 	}
@@ -221,9 +220,6 @@ module.exports = function $flow() {
 	        target: newEnd,
 	    }, connectComm);
 
-	    verifyLockLine=true;
-
-	    
 	    componentInit();
 	}
 
@@ -270,7 +266,7 @@ module.exports = function $flow() {
 		}
 		conn.setPaintStyle(aaa)
 		selectedLine=conn;
-		// that.hi=conn;
+		that.hi=conn;
 
 	});
 
@@ -306,28 +302,59 @@ module.exports = function $flow() {
 			},100);
 		}
 
-		//------------
-
-
-		if(sourceClass.contains('edit') && targetClass.contains('verify')){
-			verifyLine+=1;
-			if(verifyLine>1){
-				var text=`${verifyLine-1}(未設定)`;
+		// ---------
+		if(sourceClass.contains('edit')){
+			var allEditLines=parseInt(info.source.dataset.line);
+			if(allEditLines && info.source.dataset.primary=='false'){
+				//非第一條線且default線已經被刪除時
+				info.source.dataset.primary=true;
+			}else if(allEditLines){
+				//非第一條線且default線仍健在時
+				info.source.dataset.line=allEditLines+1;
+				var text=`${allEditLines}(未設定)`;
 				info.connection.setLabel(text);
+			}else{
+				//第一條線時
+				info.source.dataset.line=1;
+				info.source.dataset.primary=true;
 			}
 		}
 
+		if(sourceClass.contains('verify')){
+			var allVerifyLines=parseInt(info.source.dataset.line);
+			if(allVerifyLines && info.source.dataset.primary=='false'){
+				//非第一條線且default線已經被刪除時
+				info.source.dataset.primary=true;
+			}else if(allVerifyLines){
+				//非第一條線且default線仍健在時
+				info.source.dataset.line=allVerifyLines+1;
+				var text=`${allVerifyLines}(未設定)`;
+				info.connection.setLabel(text);
+			}else{
+				//第一條線時
+				info.source.dataset.line=1;
+				info.source.dataset.primary=true;
+			}
+		}
 
 	});
 
 	this.deleteItem=function(){
+		var sourceClass=selectedLine.source.classList;
+		var targetClass=selectedLine.target.classList;
+
 		if(!selectedLine && !selectedNode){
 			$('#deleteNone').puidialog('show');
 		}else{
 			if(selectedLine){
-				if(selectedLine.source.classList.contains('edit') && selectedLine.target.classList.contains('verify')){
-					verifyLine-=1;
+				if(sourceClass.contains('edit') && selectedLine.source.dataset.primary=='true'){
+					selectedLine.source.dataset.primary=false;
 				}
+
+				if(sourceClass.contains('verify') && selectedLine.source.dataset.primary=='true'){
+					selectedLine.source.dataset.primary=false;
+				}
+
 				jsPlumb.deleteConnection(selectedLine);
 				selectedLine='';
 			}
@@ -401,7 +428,7 @@ module.exports = function $flow() {
 			infoRole.textContent=[...roleInfo].map(item => item.textContent).join('、');
 			infoRole.parentNode.parentNode.classList.remove('no-role');
 		}else{
-			infoRole.textContent='未設定';
+			infoRole.textContent='';
 			infoRole.parentNode.parentNode.classList.add('no-role');
 		}
 
@@ -454,7 +481,7 @@ module.exports = function $flow() {
 			infoRole.textContent=[...roleInfo].map(item => item.textContent).join('、');
 			infoRole.parentNode.parentNode.classList.remove('no-role');
 		}else{
-			infoRole.textContent='未設定';
+			infoRole.textContent='';
 			infoRole.parentNode.parentNode.classList.add('no-role');
 		}
 
