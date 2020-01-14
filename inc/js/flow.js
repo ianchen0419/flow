@@ -347,11 +347,11 @@ module.exports = function $flow() {
 			$('#deleteNone').puidialog('show');
 		}else{
 			if(selectedLine){
-				if(sourceClass.contains('edit') && selectedLine.source.dataset.primary=='true'){
+				if(sourceClass.contains('edit') && selectedLine.getLabel()==null){
 					selectedLine.source.dataset.primary=false;
 				}
 
-				if(sourceClass.contains('verify') && selectedLine.source.dataset.primary=='true'){
+				if(sourceClass.contains('verify') && selectedLine.getLabel()==null){
 					selectedLine.source.dataset.primary=false;
 				}
 
